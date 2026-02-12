@@ -533,6 +533,7 @@ in
       vale-ls
       pyright
       jdt-language-server
+      python313Packages.jupytext
       lua5_1
       zoxide
       openssl
