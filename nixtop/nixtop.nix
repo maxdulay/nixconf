@@ -523,16 +523,6 @@ in
       nvtopPackages.full
       killall
       bat
-      # LSP
-      nixd
-      rust-analyzer
-      clang-tools
-      lua-language-server
-      ltex-ls
-      vale-ls
-      pyright
-      jdt-language-server
-      python313Packages.jupytext
       lua5_1
       zoxide
       openssl

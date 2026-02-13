@@ -79,9 +79,19 @@
 
   programs.neovim = {
     enable = true;
-    # extraLuaPackages = luaPkgs: with pkgs.luajitPackages; [ magick ];
     viAlias = true;
     vimAlias = true;
+    extraPackages = with pkgs; [
+      python3Packages.jupytext
+      nixd
+      rust-analyzer
+      clang-tools
+      lua-language-server
+      ltex-ls
+      vale-ls
+      pyright
+      jdt-language-server
+    ];
   };
   programs.zsh = {
     enable = true;
