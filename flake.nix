@@ -5,9 +5,9 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-		agenix.url = "github:ryantm/agenix";
-		agenix.inputs.nixpkgs.follows = "nixpkgs";
-		agenix.inputs.darwin.follows = "";
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
+    agenix.inputs.darwin.follows = "";
     kbar.url = "github:maxdulay/kbar";
     kbar.inputs.nixpkgs.follows = "nixpkgs";
     omen-rust.url = "github:maxdulay/omen-fan-controller-rust";
@@ -24,13 +24,13 @@
       ...
     }:
     {
-      nixosConfigurations.nixtop= nixpkgs.lib.nixosSystem {
+      nixosConfigurations.nixtop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           ./configuration.nix
-					./nixtop/nixtop.nix
-					inputs.agenix.nixosModules.default
+          ./nixtop/nixtop.nix
+          inputs.agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
