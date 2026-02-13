@@ -600,30 +600,6 @@ in
       extraPkgs =
         pkgs: with pkgs; [
           wineWowPackages.waylandFull
-          alsa-lib
-          atk
-          cairo
-          cups
-          dbus
-          expat
-          gdk-pixbuf
-          glib
-          gtk3
-          libxcb
-          libXcursor
-          libXcomposite
-          libXdamage
-          libXext
-          libXfixes
-          libXi
-          libXrandr
-          libXrender
-          libXScrnSaver
-          libXtst
-          nss
-          nspr
-          pango
-          openssl
         ];
     };
     # remotePlay.openFirewall = true;
