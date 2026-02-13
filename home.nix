@@ -102,6 +102,7 @@
         '';
       rebuild = # bash
         "sudo sh -c \"nixos-rebuild switch --log-format internal-json -v |& nom --json\"\n";
+      sudolazygit = "sudo -E lazygit";
       wg-dns = "nmcli connection up wg-dns; nmcli connection down wg-full";
       wg-full = "nmcli connection up wg-full; nmcli connection down wg-dns";
     };
