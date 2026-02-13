@@ -388,32 +388,6 @@ in
   environment.systemPackages =
     with pkgs;
     let
-      #   kalc = rustPlatform.buildRustPackage rec {
-      #     pname = "kalc";
-      #     version = "v1.4.2";
-      #
-      #     src = fetchFromGitHub {
-      #       owner = "bgkillas";
-      #       repo = pname;
-      #       rev = version;
-      #       hash = "sha256-sea00evxOVE6FXAhaa4zRcngkfIpwfH8mfylaiChb9w=";
-      #     };
-      #
-      #     cargoHash = "sha256-oTXlneosiU1kQuqfuhdmXb8h0HXYadW7DoX53G+AwN8=";
-      #
-      #     meta = {
-      #       description =
-      #         "a complex numbers, 2d/3d graphing, arbitrary precision, vector/matrix, cli calculator with real-time output and support for units";
-      #       homepage = "https://github.com/bgkillas/kalc";
-      #       license = lib.licenses.gpl3Only;
-      #       maintainers = [ ];
-      #     };
-      # buildPhase = ''
-      # 	substituteInPlace Cargo.toml \
-      # 		--replace "force-cross" "use-system-libs"
-      # 	'';
-      #     nativeBuildInputs = with pkgs; [ cargo rustc m4 diffutils gcc ];
-      #   };
       mmdr = rustPlatform.buildRustPackage rec {
         pname = "mermaid-rs-renderer";
         version = "v0.2.0";
@@ -580,7 +554,7 @@ in
       osu-lazer-bin
       libimobiledevice
       davinci-resolve
-      gnuplot
+      libqalculate
       ani-cli
       manga-tui
       mpv

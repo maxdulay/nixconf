@@ -841,8 +841,8 @@
         "ALT, 9, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         "ALT, 0, exec, playerctl next"
-        ", XF86Calculator, exec, [animation slide; float; center; size 25% 50%;] kitty -o confirm_os_window_close=0 --title calculator kalc"
-        "ALT, Num_lock, exec, [animation slide; float; center; size 25% 50%;] kitty -o confirm_os_window_close=0 --title calculator kalc"
+        ", XF86Calculator, exec, [animation slide; float; center; size 25% 50%;] kitty -o confirm_os_window_close=0 --title calculator qalc"
+        "ALT, Num_lock, exec, [animation slide; float; center; size 25% 50%;] kitty -o confirm_os_window_close=0 --title calculator qalc"
         ", switch:on:Lid Switch, exec, systemctl suspend"
 
         ", XF86Launch2, exec, ${acpower}/bin/acpower"
