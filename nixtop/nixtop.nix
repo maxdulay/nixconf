@@ -53,6 +53,8 @@ in
     };
   };
 
+  ## Boot
+
   boot.loader = {
     timeout = 5;
     efi.canTouchEfiVariables = true;
@@ -80,7 +82,7 @@ in
     "net.ipv4.ip_forward" = 1;
   };
 
-  # sudo su -c "cd /etc/NetworkManager/system-connections && nix --extra-experimental-features 'nix-command flakes' run github:Janik-Haag/nm2nix | nix --extra-experimental-features 'nix-command flakes' run nixpkgs#nixfmt-rfc-style"
+  ## Desktop
 
   xdg = {
     autostart.enable = true;
@@ -109,14 +111,8 @@ in
       };
       defaultApplications = {
         "inode/directory" = [ "vifm.desktop" ]; # Directories
-        # "text/plain" = [ "nvim.desktop" ]; # Plain text
-        # "application/vnd.openxmlformats-officedocument.wordprocessingml.document" =
-        #   [ "onlyoffice-desktopeditors.desktop" ]; # .docx
-        # "application/vnd.openxmlformats-officedocument.presentationml.presentation" =
-        #   [ "onlyoffice-desktopeditors.desktop" ]; # .pptx
         "application/pdf" = [ "org.pwmt.zathura.desktop" ]; # .pdf
         "application/mscz" = [ "org.musescore.MuseScore.desktop" ];
-        # "application/zip" = [ "xarchiver.desktop" ];
         "text/*" = [ "nvim.desktop" ]; # Any text files
         "video/*" = [ "mpv.desktop" ]; # Any video files
         "default-web-browser" = [ "firefox.desktop" ]; # Links
@@ -147,6 +143,7 @@ in
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
+
   networking.networkmanager.ensureProfiles = {
     secrets.entries = [
       {
@@ -179,6 +176,7 @@ in
       }
 
     ];
+    # sudo su -c "cd /etc/NetworkManager/system-connections && nix --extra-experimental-features 'nix-command flakes' run github:Janik-Haag/nm2nix | nix --extra-experimental-features 'nix-command flakes' run nixpkgs#nixfmt-rfc-style"
     profiles = {
       wg-full = {
         connection = {
@@ -242,27 +240,9 @@ in
     };
   };
   networking.firewall.checkReversePath = false;
-
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    wireplumber.enable = true;
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.input.General.ClassicBondedOnly = false;
   services.blueman.enable = true;
-  # Fan control stuff for OMEN by HP Laptop 17-ck1xxx
-  systemd.services.rustfancontrol = {
-    enable = true;
-    description = "Omen fancontrol written in rust";
-    serviceConfig.ExecStart = "${omen-rust}/bin/omen-rust";
-    wantedBy = [ "multi-user.target" ];
-  };
-
   systemd.user.services.ancs-linux = {
     enable = true;
     description = "Apple Notifications";
@@ -272,6 +252,76 @@ in
       EnvironmentFile = config.age.secrets.iphone-mac.path;
     };
     wantedBy = [ ];
+  };
+  services.avahi.enable = true;
+  services.avahi.publish.enable = true;
+  services.avahi.publish.userServices = true;
+  systemd.user.services.shairport-sync = {
+    enable = true;
+    description = "AirPlay server";
+    after = [
+      "network.target"
+      "sound.target"
+      "avahi-daemon.service"
+    ];
+    wantedBy = [ "default.target" ];
+    serviceConfig.ExecStart = "${pkgs.shairport-sync}/bin/shairport-sync -v -o alsa";
+  };
+  environment.etc."shairport-sync.conf".source =
+    let
+      configFormat = pkgs.formats.libconfig { };
+    in
+    configFormat.generate "shairport-sync.conf" {
+      diagnostics = {
+        log_verbosity = 1;
+      };
+      general = {
+        name = "Nixtop";
+        output_backend = "alsa";
+        volume_control_profile = "flat";
+        default_airplay_volume = -0.0;
+      };
+    };
+  networking.firewall = {
+    enable = true;
+
+    allowedUDPPorts = [
+      5353
+      6000
+      6001
+      7011
+      27031
+      47111
+    ];
+    allowedTCPPorts = [
+      5000
+      7000
+      7001
+      7100
+      27031
+    ];
+    allowedUDPPortRanges = [
+      {
+        from = 6001;
+        to = 6011;
+      }
+    ];
+    allowedTCPPortRanges = [
+      {
+        from = 7000;
+        to = 7005;
+      }
+    ];
+  };
+
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    wireplumber.enable = true;
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
   };
 
   services.udev = {
@@ -301,7 +351,6 @@ in
       libvdpau-va-gl
       nvidia-vaapi-driver
     ];
-    #extraPackages = with pkgs; [ intel-media-driver vaapiIntel vaapiVdpau libvdpau-va-gl nvidia-vaapi-driver];
   };
   environment.variables.VDPAU_DRIVER = "va_gl";
   environment.variables.LIBVA_DRIVER_NAME = "iHD";
@@ -332,32 +381,8 @@ in
       enable = true;
       enableOffloadCmd = true;
     };
-    #sync.enable = true;
-    # Make sure to use the correct Bus ID values for your system!
     intelBusId = "PCI:0:2:0";
     nvidiaBusId = "PCI:1:0:0";
-  };
-
-  security = {
-    enableWrappers = true;
-    wrappers = {
-      omen-performance-control = {
-        source = "${omen-rust}/bin/omen-performance-control";
-        setuid = true;
-        setgid = true;
-        owner = "root";
-        group = "root";
-        program = "omen-performance-control";
-      };
-      auto-cpufreq = {
-        source = "${pkgs.auto-cpufreq}/bin/auto-cpufreq";
-        setuid = true;
-        setgid = true;
-        owner = "root";
-        group = "root";
-        program = "auto-cpufreq";
-      };
-    };
   };
 
   environment.systemPackages =
@@ -574,7 +599,6 @@ in
     package = pkgs.steam.override {
       extraPkgs =
         pkgs: with pkgs; [
-          # Extra packages in order to run fightcade. It should work without these but it doesnt
           wineWowPackages.waylandFull
           alsa-lib
           atk
@@ -644,74 +668,39 @@ in
   };
   environment.variables.GAMEMODERUNEXEC = "nvidia-offload";
 
+  ## "Drivers"
+
   services.usbmuxd = {
     enable = true;
-  };
-
-  services.avahi.enable = true;
-  services.avahi.publish.enable = true;
-  services.avahi.publish.userServices = true;
-  systemd.user.services.shairport-sync = {
-    enable = true;
-    description = "AirPlay server";
-    after = [
-      "network.target"
-      "sound.target"
-      "avahi-daemon.service"
-    ];
-    wantedBy = [ "default.target" ];
-    serviceConfig.ExecStart = "${pkgs.shairport-sync}/bin/shairport-sync -v -o alsa";
-  };
-  environment.etc."shairport-sync.conf".source =
-    let
-      configFormat = pkgs.formats.libconfig { };
-    in
-    configFormat.generate "shairport-sync.conf" {
-      diagnostics = {
-        log_verbosity = 1;
-      };
-      general = {
-        name = "Nixtop";
-        output_backend = "alsa";
-        volume_control_profile = "flat";
-        default_airplay_volume = -0.0;
-      };
-    };
-  networking.firewall = {
-    enable = true;
-
-    allowedUDPPorts = [
-      5353
-      6000
-      6001
-      7011
-      27031
-      47111
-    ];
-    allowedTCPPorts = [
-      5000
-      7000
-      7001
-      7100
-      27031
-    ];
-    allowedUDPPortRanges = [
-      {
-        from = 6001;
-        to = 6011;
-      }
-    ];
-    allowedTCPPortRanges = [
-      {
-        from = 7000;
-        to = 7005;
-      }
-    ];
   };
 
   hardware.opentabletdriver = {
     enable = true;
     daemon.enable = true;
+  };
+
+  ## Powersave
+
+  security = {
+    enableWrappers = true;
+    wrappers = {
+      omen-performance-control = {
+        source = "${omen-rust}/bin/omen-performance-control";
+        setuid = true;
+        setgid = true;
+        owner = "root";
+        group = "root";
+        program = "omen-performance-control";
+      };
+      auto-cpufreq = {
+        source = "${pkgs.auto-cpufreq}/bin/auto-cpufreq";
+        setuid = true;
+        setgid = true;
+        owner = "root";
+        group = "root";
+        program = "auto-cpufreq";
+      };
+    };
   };
 
   services.auto-cpufreq = {
@@ -728,7 +717,16 @@ in
     };
   };
 
+  systemd.services.rustfancontrol = {
+    enable = true;
+    description = "Omen fancontrol written in rust";
+    serviceConfig.ExecStart = "${omen-rust}/bin/omen-rust";
+    wantedBy = [ "multi-user.target" ];
+  };
+
   services.thermald.enable = true;
+
+  ## Fonts
 
   fonts.packages = with pkgs; [
     nerd-fonts.caskaydia-mono
