@@ -812,6 +812,9 @@
           "$mod SHIFT, l, movewindow, r"
           "$mod SHIFT, k, movewindow, u"
           "$mod SHIFT, j, movewindow, d"
+
+          "$mod, space, swapactiveworkspaces, 0 1"
+          "$mod SHIFT, V, movetoworkspace, name:v"
         ]
         ++ movetoworkspaces
         ++ switchworkspaces;
