@@ -15,9 +15,6 @@
 
   nix.extraOptions = "keep-outputs = true\nkeep-derivations = true\n";
 
-  networking.networkmanager.enable = true;
-
-  systemd.services.NetworkManager-wait-online.enable = false;
   services.journald.extraConfig = "SystemMaxUse=100M";
 
   # Set your time zone.
@@ -38,8 +35,6 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
 
   # Configure keymap in X11
   services.xserver = {
@@ -88,7 +83,7 @@
     nvd
     vifm
     nixfmt
-		screen
+    screen
   ];
 
   programs.neovim = {

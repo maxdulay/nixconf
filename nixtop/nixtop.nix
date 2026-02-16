@@ -71,6 +71,9 @@ in
   services.sshd.enable = true;
   networking.hostName = "nixtop";
 
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
+
   fileSystems."/home/maxdu/Windows" = {
     device = "/dev/disk/by-uuid/D6C6FA39C6FA1987";
     neededForBoot = false;
@@ -144,6 +147,8 @@ in
     NIXOS_OZONE_WL = "1";
   };
 
+  networking.networkmanager.enable = true;
+  systemd.services.NetworkManager-wait-online.enable = false;
   networking.networkmanager.ensureProfiles = {
     secrets.entries = [
       {

@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     agenix.url = "github:ryantm/agenix";
@@ -20,6 +21,7 @@
     inputs@{
       self,
       nixpkgs,
+      nixpkgs-stable,
       home-manager,
       ...
     }:
@@ -38,6 +40,15 @@
             home-manager.useUserPackages = true;
             home-manager.users.maxdu = import ./home.nix;
           }
+        ];
+      };
+      nixosConfigurations.nixserver = nixpkgs-stable.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./configuration.nix
+          ./nixserver/nixserver.nix
+          inputs.agenix.nixosModules.default
         ];
       };
     };
