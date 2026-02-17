@@ -123,8 +123,8 @@
     verbose = true;
     interval = "5m";
     protocol = "cloudflare";
-    usev4 = "webv4, webv4=https://api.ipify.org";
-    usev6 = "disabled";
+    usev4 = "webv4, webv4=ipify-ipv4";
+    usev6 = "webv6, webv6=ipify-ipv6";
     zone = "dulaym.ax";
     domains = [
       "immich.dulaym.ax"
