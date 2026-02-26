@@ -66,7 +66,7 @@ in
       fontSize = 48;
     };
   };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_6_18;
 
   services.sshd.enable = true;
   networking.hostName = "nixtop";
@@ -568,7 +568,7 @@ in
     package = pkgs.steam.override {
       extraPkgs =
         pkgs: with pkgs; [
-          wineWowPackages.waylandFull
+          wineWow64Packages.waylandFull
         ];
     };
     # remotePlay.openFirewall = true;

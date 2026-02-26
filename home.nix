@@ -692,7 +692,7 @@
           movetoworkspaces = map (n: "$mod SHIFT, ${toString n}, movetoworkspace, ${toWSNumber n}") (
             lib.range 0 9
           );
-          switchworkspaces = map (n: "$mod, ${toString n}, workspace, ${toWSNumber n}") (lib.range 0 9);
+          switchworkspaces = map (n: "$mod, ${toString n}, focusworkspaceoncurrentmonitor, ${toWSNumber n}") (lib.range 0 9);
 
           kill = pkgs.writeShellApplication {
             name = "kill";
