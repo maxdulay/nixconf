@@ -569,6 +569,7 @@ in
       extraPkgs =
         pkgs: with pkgs; [
           wineWow64Packages.waylandFull
+          winetricks
         ];
     };
     # remotePlay.openFirewall = true;
