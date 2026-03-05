@@ -671,6 +671,45 @@ in
 
   services.thermald.enable = true;
 
+  services.fstrim.enable = true;
+
+  systemd.user.services.update-notifier =
+    let
+      update-notifier = pkgs.writeShellApplication {
+        name = "update-notifier";
+        runtimeInputs = with pkgs; [
+          git
+          libnotify
+          gawk
+          coreutils
+          iputils
+        ];
+        text = # bash
+          ''
+            						until ping -c1 github.com; do sleep 1; done;
+                        ONLINE_REV="$(git ls-remote https://github.com/NixOS/nixpkgs nixos-unstable | awk '{print $1}')"
+                        CURRENT_REV=${config.system.nixos.revision}
+
+                        echo "$ONLINE_REV";
+                        echo "$CURRENT_REV";
+                        if [ "$ONLINE_REV" != "$CURRENT_REV" ]; then
+                        	notify-send "Update available for nixos-unstable" -t 10000;
+                        fi
+            					'';
+      };
+    in
+    {
+      enable = true;
+      description = "Sends notification if nixos-unstable update available";
+      after = [
+        "network.target"
+        "nss-lookup.target"
+        "graphical.target"
+      ];
+      wantedBy = [ "default.target" ];
+      serviceConfig.ExecStart = "${update-notifier}/bin/update-notifier";
+    };
+
   ## Fonts
 
   fonts.packages = with pkgs; [
