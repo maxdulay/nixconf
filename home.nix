@@ -674,6 +674,9 @@
         "match:class ^(Fightcade)$,tile on"
         "match:title launcher, stay_focused on"
         "match:title launcher, dim_around on"
+				"match:class ^(uv4.exe)$, match:title ^()$, float on"
+				"match:class ^(uv4.exe)$, match:title ^()$, size 0 0"
+				"match:class ^(uv4.exe)$, match:title ^(SECSplashWnd)$, float on"
       ];
 
       layerrule = [
