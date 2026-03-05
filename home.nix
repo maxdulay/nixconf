@@ -363,6 +363,11 @@
       "browser.helperApps.deleteTempFileOnExit" = true;
       "browser.pagethumbnails.capturing_disabled" = true;
       "security.tls.enable_kyber" = true;
+      "browser.ai.control.default" = "blocked";
+      "browser.ai.control.linkPreviewKeyPoints" = "blocked";
+      "browser.ai.control.pdfjsAltText" = "blocked";
+      "browser.ai.control.sidebarChatbot" = "blocked";
+      "browser.ai.control.smartTabGroups" = "blocked";
     };
     policies = {
       AppAutoUpdate = false;
