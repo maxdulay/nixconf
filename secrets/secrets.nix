@@ -27,6 +27,7 @@ in
 	"wg-client5-preshared.age".publicKeys = nixserver-users;
 	"wg-client6-preshared.age".publicKeys = nixserver-users;
 	"wg-client7-preshared.age".publicKeys = nixserver-users;
+	"wg-client8-preshared.age".publicKeys = nixserver-users;
 	"livekitkey.age".publicKeys = nixserver-users;
 	"livekitsecret.age".publicKeys = nixserver-users;
 	"livekitkeyfile.age".publicKeys = nixserver-users;
