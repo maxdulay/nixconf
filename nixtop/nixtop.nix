@@ -66,19 +66,21 @@ in
       fontSize = 48;
     };
   };
-  boot.kernelPackages = pkgs.linuxPackages_6_18;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.sshd.enable = true;
   networking.hostName = "nixtop";
 
   programs.zsh.enable = true;
+	programs.nix-index-database.comma.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-  fileSystems."/home/maxdu/Windows" = {
-    device = "/dev/disk/by-uuid/D6C6FA39C6FA1987";
-    neededForBoot = false;
-    options = [ "nofail" ];
-  };
+  # fileSystems."/home/maxdu/Windows" = {
+  #   device = "/dev/disk/by-uuid/D6C6FA39C6FA1987";
+  #   neededForBoot = false;
+  # fsType = "ntfs";
+  #   options = [ "nofail" "ro" ];
+  # };
 
   boot.kernel.sysctl = {
     "net.ipv6.conf.all.forwarding" = true;
@@ -95,7 +97,6 @@ in
       config = {
         common.default = [
           "hyprland"
-          "gtk"
         ];
         hyprland = {
           "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
@@ -215,7 +216,7 @@ in
       };
       wg-dns = {
         connection = {
-          autoconnect = "true";
+          autoconnect = "false";
           id = "wg-dns";
           interface-name = "wg0";
           type = "wireguard";
@@ -317,6 +318,10 @@ in
         from = 7000;
         to = 7005;
       }
+			{
+        from = 1714;
+        to = 1764;
+			}
     ];
   };
 
@@ -342,6 +347,7 @@ in
 
         # Rules for PS3 Eye
         ATTR{idVendor}=="1415", ATTR{idProduct}=="2000", MODE="777"
+				#SUBSYSTEM=="usb", ATTRS{idVendor}=="0408", ATTRS{idProduct}=="5477", ATTR{authorized}="0"
 
         # Rules for bluetooth
 
@@ -376,8 +382,7 @@ in
     # accessible via `nvidia-settings`.
     nvidiaSettings = true;
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
-
+    package = config.boot.kernelPackages.nvidiaPackages.latest; # or beta
   };
   boot.blacklistedKernelModules = [ "nova_core" ];
 
@@ -444,7 +449,7 @@ in
       pamixer
       libnotify
       yt-dlp
-      # (tetrio-desktop.override { withTetrioPlus = true; })
+      tetrio-desktop
       nvidia-vaapi-driver
       gnupg
       autoconf
@@ -454,9 +459,9 @@ in
       m4
       gperf
       cudatoolkit
-      libsForQt5.qt5ct
+      # qt5.qt5ct
       kdePackages.qtwayland
-      libsForQt5.qt5.qtwayland
+      qt5.qtwayland
       wget
       gcc
       tray-tui
@@ -489,7 +494,6 @@ in
       brightnessctl
       ripgrep
       powertop
-      flat-remix-gtk
       gtk3
       gtk4
       gtk2
@@ -560,8 +564,8 @@ in
       usbmuxd
     ];
 
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "maxdu" ];
+  # virtualisation.virtualbox.host.enable = true;
+  # users.extraGroups.vboxusers.members = [ "maxdu" ];
 
   programs.steam = {
     enable = true;
@@ -655,11 +659,17 @@ in
     settings = {
       battery = {
         governor = "powersave";
+				energy_performance_preference = "power";
+				energy_perf_bias = "power";
+				platform_profile = "cool";
       };
 
       charger = {
         governor = "powersave";
         turbo = "auto";
+				energy_performance_preference = "performance";
+				energy_perf_bias = "performance";
+				platform_profile = "performance";
       };
     };
   };
@@ -688,16 +698,16 @@ in
         ];
         text = # bash
           ''
-            						until ping -c1 github.com; do sleep 1; done;
-                        ONLINE_REV="$(git ls-remote https://github.com/NixOS/nixpkgs nixos-unstable | awk '{print $1}')"
-                        CURRENT_REV=${config.system.nixos.revision}
+            until ping -c1 github.com; do sleep 1; done;
+            ONLINE_REV="$(git ls-remote https://github.com/NixOS/nixpkgs nixos-unstable | awk '{print $1}')"
+            CURRENT_REV=${config.system.nixos.revision}
 
-                        echo "$ONLINE_REV";
-                        echo "$CURRENT_REV";
-                        if [ "$ONLINE_REV" != "$CURRENT_REV" ]; then
-                        	notify-send "Update available for nixos-unstable" -t 10000;
-                        fi
-            					'';
+            echo "$ONLINE_REV";
+            echo "$CURRENT_REV";
+            if [ "$ONLINE_REV" != "$CURRENT_REV" ]; then
+							notify-send "Update available for nixos-unstable" -t 10000;
+            fi
+          '';
       };
     in
     {
@@ -727,6 +737,8 @@ in
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
+		vista-fonts
+		corefonts
   ];
   system.stateVersion = "23.11"; # Did you read the comment?
 }

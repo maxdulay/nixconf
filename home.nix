@@ -7,6 +7,7 @@
 {
   home.packages = [ ];
   home.pointerCursor = {
+		enable = true;
     gtk.enable = true;
     x11.enable = true;
     package = pkgs.bibata-cursors;
@@ -24,7 +25,7 @@
     "TETR.IO" = {
       name = "TETR.IO";
       genericName = "tetris";
-      exec = "gamemoderun tetrio";
+      exec = "XDG_SESSION_TYPE=x11 gamemoderun tetrio";
       icon = "TETR.IO";
     };
     "com.github.wwmm.easyeffects" = {
@@ -59,15 +60,18 @@
   };
   gtk = {
     enable = true;
-    theme.package = pkgs.materia-theme;
-    theme.name = "Materia-dark-compact";
+    theme.package = pkgs.yaru-remix-theme;
+    theme.name = "Yaru-remix-dark";
     iconTheme.package = pkgs.pop-icon-theme;
     iconTheme.name = "Pop";
     cursorTheme.name = "Bibata-Modern-Ice";
     cursorTheme.size = 24;
     font.name = "CaskaydiaCove Nerd Font Mono";
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
+    gtk4 = {
+			theme = null;
+      extraConfig = {
+        gtk-application-prefer-dark-theme = 1;
+      };
     };
   };
 
@@ -81,7 +85,9 @@
     enable = true;
     viAlias = true;
     vimAlias = true;
+    sideloadInitLua = true;
     extraPackages = with pkgs; [
+      tree-sitter
       python3Packages.jupytext
       nixd
       rust-analyzer
@@ -92,6 +98,9 @@
       pyright
       jdt-language-server
     ];
+    withRuby = false;
+    withPython3 = true;
+    withNodeJs = false;
   };
   programs.zsh = {
     enable = true;
@@ -282,6 +291,7 @@
         	    '';
   };
   programs.firefox = {
+		configPath = ".mozilla/firefox";
     enable = true;
     languagePacks = [ "en-US" ];
     profiles.default.settings = {
@@ -595,7 +605,7 @@
       };
 
       dwindle = {
-        pseudotile = "yes";
+        # pseudotile = "yes";
         preserve_split = "yes";
       };
       misc = {
@@ -660,7 +670,7 @@
         "match:class ^(osu!)$, immediate on"
         "match:initial_title ^(.*FINALS.*)$, immediate on"
         "match:title ^(iamb)$, workspace name:v,"
-        "match:class ^(Element)$, workspace name:v,"
+        "match:initial_title ^(Element)$, workspace name:v,"
         "match:class ^(vesktop)$, workspace name:v,"
         "match:class ^(qt5ct)$, float on"
         "match:class ^(nwg-look)$,float on"
@@ -674,9 +684,11 @@
         "match:class ^(Fightcade)$,tile on"
         "match:title launcher, stay_focused on"
         "match:title launcher, dim_around on"
-				"match:class ^(uv4.exe)$, match:title ^()$, float on"
-				"match:class ^(uv4.exe)$, match:title ^()$, size 0 0"
-				"match:class ^(uv4.exe)$, match:title ^(SECSplashWnd)$, float on"
+        "match:class ^(uv4.exe)$, match:title ^()$, float on"
+        "match:class ^(uv4.exe)$, match:title ^()$, size 0 0"
+        "match:class ^(uv4.exe)$, match:title ^(SECSplashWnd)$, float on"
+        "match:class ^(uv4.exe)$, match:title ^()$, opacity 0"
+        "match:class ^(uv4.exe)$, match:title ^()$, no_anim on"
       ];
 
       layerrule = [
@@ -700,7 +712,9 @@
           movetoworkspaces = map (n: "$mod SHIFT, ${toString n}, movetoworkspace, ${toWSNumber n}") (
             lib.range 0 9
           );
-          switchworkspaces = map (n: "$mod, ${toString n}, focusworkspaceoncurrentmonitor, ${toWSNumber n}") (lib.range 0 9);
+          switchworkspaces = map (n: "$mod, ${toString n}, focusworkspaceoncurrentmonitor, ${toWSNumber n}") (
+            lib.range 0 9
+          );
 
           kill = pkgs.writeShellApplication {
             name = "kill";
@@ -729,7 +743,7 @@
             text = # bash
               ''
                 if [[ -n $(
-                hyprctl clients -j | jq '.[] | select(.class=="Element" or .title=="iamb" or .class=="vesktop")'
+                hyprctl clients -j | jq '.[] | select(.initialTitle=="Element" or .title=="iamb" or .class=="vesktop")'
                 ) ]] 
                 then 
                 hyprctl dispatch focusworkspaceoncurrentmonitor v
@@ -818,7 +832,7 @@
           "$mod, P, exec, grimblast --freeze copysave area /tmp/screenshot.png && swappy -f /tmp/screenshot.png"
           "$mod CTRL, P, exec, grimblast save area - | tesseract - - | wl-copy"
 
-          "$mod, x, togglesplit,"
+          "$mod, x, layoutmsg, togglesplit"
 
           "$mod, mouse_down, workspace, e+1"
           "$mod, mouse_up, workspace, e-1"
