@@ -7,34 +7,34 @@
 }:
 let
   omen-rust = inputs.omen-rust.packages.${pkgs.stdenv.hostPlatform.system}.omen-rust;
-  ancs-linux =
-    with pkgs;
-    rustPlatform.buildRustPackage rec {
-      pname = "ancs-linux";
-      version = "19f5d0cce5d99b4ce2d77d90e3433215bea65172";
-
-      src = fetchFromGitHub {
-        owner = "kmod-midori";
-        repo = pname;
-        rev = version;
-        hash = "sha256-KTEf7YorJDEe3bHkwR5mJwduihyUDREFGX2H1B+gQZI=";
-      };
-      cargoHash = "sha256-zS8dllpKJUkRRFYeWFw3wc3OOPFPZlc7os48/MwwhGU=";
-
-      nativeBuildInputs = [
-        cargo
-        rustc
-        pkg-config
-      ];
-      buildInputs = [ dbus ];
-
-      meta = {
-        description = "Forward notifications from your iOS devices to your Linux desktop ";
-        homepage = "https://github.com/kmod-midori/ancs-linux";
-        license = lib.licenses.mit;
-        maintainers = [ ];
-      };
-    };
+  # ancs-linux =
+  #   with pkgs;
+    # rustPlatform.buildRustPackage rec {
+    #   pname = "ancs-linux";
+    #   version = "19f5d0cce5d99b4ce2d77d90e3433215bea65172";
+    #
+    #   src = fetchFromGitHub {
+    #     owner = "kmod-midori";
+    #     repo = pname;
+    #     rev = version;
+    #     hash = "sha256-KTEf7YorJDEe3bHkwR5mJwduihyUDREFGX2H1B+gQZI=";
+    #   };
+    #   cargoHash = "sha256-zS8dllpKJUkRRFYeWFw3wc3OOPFPZlc7os48/MwwhGU=";
+    #
+    #   nativeBuildInputs = [
+    #     cargo
+    #     rustc
+    #     pkg-config
+    #   ];
+    #   buildInputs = [ dbus ];
+    #
+    #   meta = {
+    #     description = "Forward notifications from your iOS devices to your Linux desktop ";
+    #     homepage = "https://github.com/kmod-midori/ancs-linux";
+    #     license = lib.licenses.mit;
+    #     maintainers = [ ];
+    #   };
+    # };
 in
 {
   imports = [
@@ -248,45 +248,46 @@ in
   hardware.bluetooth.enable = true;
   hardware.bluetooth.input.General.ClassicBondedOnly = false;
   services.blueman.enable = true;
-  systemd.user.services.ancs-linux = {
-    enable = true;
-    description = "Apple Notifications";
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${ancs-linux}/bin/ancs-linux $MAC";
-      EnvironmentFile = config.age.secrets.iphone-mac.path;
-    };
-    wantedBy = [ ];
-  };
-  services.avahi.enable = true;
-  services.avahi.publish.enable = true;
-  services.avahi.publish.userServices = true;
-  systemd.user.services.shairport-sync = {
-    enable = true;
-    description = "AirPlay server";
-    after = [
-      "network.target"
-      "sound.target"
-      "avahi-daemon.service"
-    ];
-    wantedBy = [ "default.target" ];
-    serviceConfig.ExecStart = "${pkgs.shairport-sync}/bin/shairport-sync -v -o alsa";
-  };
-  environment.etc."shairport-sync.conf".source =
-    let
-      configFormat = pkgs.formats.libconfig { };
-    in
-    configFormat.generate "shairport-sync.conf" {
-      diagnostics = {
-        log_verbosity = 1;
-      };
-      general = {
-        name = "Nixtop";
-        output_backend = "alsa";
-        volume_control_profile = "flat";
-        default_airplay_volume = -0.0;
-      };
-    };
+  # systemd.user.services.ancs-linux = {
+  #   enable = true;
+  #   description = "Apple Notifications";
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     ExecStart = "${ancs-linux}/bin/ancs-linux $MAC";
+  #     EnvironmentFile = config.age.secrets.iphone-mac.path;
+  #   };
+  #   wantedBy = [ ];
+  # };
+  # services.avahi.enable = true;
+  # services.avahi.publish.enable = true;
+  # services.avahi.publish.userServices = true;
+  # systemd.user.services.shairport-sync = {
+  #   enable = true;
+  #   description = "AirPlay server";
+  #   after = [
+  #     "network.target"
+  #     "sound.target"
+  #     "avahi-daemon.service"
+  #   ];
+  #   wantedBy = [ "default.target" ];
+  #   serviceConfig.ExecStart = "${pkgs.shairport-sync}/bin/shairport-sync -v -o alsa";
+  # };
+  # environment.etc."shairport-sync.conf".source =
+  #   let
+  #     configFormat = pkgs.formats.libconfig { };
+  #   in
+  #   configFormat.generate "shairport-sync.conf" {
+  #     diagnostics = {
+  #       log_verbosity = 1;
+  #     };
+  #     general = {
+  #       name = "Nixtop";
+  #       output_backend = "alsa";
+  #       volume_control_profile = "flat";
+  #       default_airplay_volume = -0.0;
+  #     };
+  #   };
+	programs.kdeconnect.enable = true;
   networking.firewall = {
     enable = true;
 
@@ -344,7 +345,7 @@ in
 
         # Rules for bluetooth
 
-        SUBSYSTEM=="bluetooth", ACTION=="add", DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0/bluetooth/hci0/hci0:256", ENV{SYSTEMD_USER_WANTS}+="ancs-linux.service"
+        # SUBSYSTEM=="bluetooth", ACTION=="add", DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0/bluetooth/hci0/hci0:256", ENV{SYSTEMD_USER_WANTS}+="ancs-linux.service"
       '';
   };
 
