@@ -29,6 +29,7 @@
     "wg-client5-preshared".file = ../secrets/wg-client5-preshared.age;
     "wg-client6-preshared".file = ../secrets/wg-client6-preshared.age;
     "wg-client7-preshared".file = ../secrets/wg-client7-preshared.age;
+    "wg-client8-preshared".file = ../secrets/wg-client8-preshared.age;
     "wg-full-preshared".file = ../secrets/wg-full-preshared.age;
     "wg-dns-preshared".file = ../secrets/wg-dns-preshared.age;
     "livekitsecret".file = ../secrets/livekitsecret.age;
@@ -48,6 +49,11 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   system.autoUpgrade = {
+    flake = "/etc/nixos/";
+    flags = [
+      "--print-build-logs"
+      "--commit-lock-file" # If you want to automatically commit the updated flake.lock
+    ];
     enable = true;
     dates = "2:00";
     randomizedDelaySec = "45min";
@@ -60,6 +66,7 @@
 
   fileSystems."/media/hdd" = {
     device = "/dev/disk/by-uuid/bd72103a-4bc8-4076-b3bb-ec6e0e24586d";
+    fsType = "ext4";
     neededForBoot = false;
     options = [ "nofail" ];
   };
@@ -227,6 +234,11 @@
             "fd42:dead:beef::10/64"
           ];
         }
+	{
+	  publicKey = "nepv5qJPwoPl6FyQrRYk+FLfn8JdeAM+S6RlAjkHVnA=";
+          presharedKeyFile = config.age.secrets."wg-client8-preshared".path;
+	  allowedIPs = [ "10.0.0.11/32" ];
+	}
       ];
     };
   };
@@ -527,7 +539,10 @@
     settings.listeners = [
       {
         port = 8008;
-        bind_addresses = [ "::1" "127.0.0.1" ];
+        bind_addresses = [
+          "::1"
+          "127.0.0.1"
+        ];
         type = "http";
         # tls = true;
         tls = false;
@@ -714,34 +729,51 @@
 
   };
 
-  nixpkgs.overlays = [
-    (final: prev: {
-      ferium = prev.ferium.override (
-        let
-          rp = pkgs.rustPlatform;
-        in
-        {
-          rustPlatform = rp // {
-            buildRustPackage =
-              args:
-              rp.buildRustPackage (
-                args
-                // {
-                  version = "4.7.0";
-                  src = prev.fetchFromGitHub {
-                    owner = "gorilla-devs";
-                    repo = "ferium";
-                    rev = "a36316a68998bb332c92c98553cbfe4296562613";
-                    hash = "sha256-jj3BdaxH7ofhHNF2eu+burn6+/0bPQQZ8JfjXAFyN4A=";
-                  };
-                  cargoHash = "sha256-yedl4KQCpT7Ai1EPvwD5kzhkHesIjGVAcxKjp5k2jmI=";
-                }
-              );
-          };
-        }
-      );
-    })
-  ];
+  # nixpkgs.overlays = [
+  #   (final: prev: {
+  #     ferium = prev.ferium.overrideAttrs (
+  #       oldAttrs:
+  #       let
+  #         rp = pkgs.rustPlatform;
+  #       in
+  #       {
+  #         rustPlatform = rp // {
+  #           buildRustPackage =
+  #             args:
+  #             rp.buildRustPackage (
+  #               args
+  #               // {
+  #                 version = "4.7.0";
+  #                 src = prev.fetchFromGitHub {
+  #                   owner = "gorilla-devs";
+  #                   repo = "ferium";
+  #                   rev = "a36316a68998bb332c92c98553cbfe4296562613";
+  #                   hash = "sha256-jj3BdaxH7ofhHNF2eu+burn6+/0bPQQZ8JfjXAFyN4A=";
+  #                 };
+  #                 cargoHash = "sha256-yedl4KQCpT7Ai1EPvwD5kzhkHesIjGVAcxKjp5k2jmI=";
+  #               }
+  #             );
+  #         };
+  #       }
+  #     );
+  #   })
+  # ];
+  #
+  # nixpkgs.overlays = [
+  #   (final: prev: {
+  #     ferium = prev.ferium.overrideAttrs (oldAttrs: {
+  #       # We completely replace the build logic using the new source and hash
+  #       src = final.fetchFromGitHub {
+  #         owner = "gorilla-devs";
+  #         repo = "ferium";
+  #         rev = "a36316a68998bb332c92c98553cbfe4296562613";
+  #         hash = "sha256-jj3BdaxH7ofhHNF2eu+burn6+/0bPQQZ8JfjXAFyN4A=";
+  #       };
+  #       # We pass the new cargoHash here
+  #       cargoHash = "sha256-yedl4KQCpT7Ai1EPvwD5kzhkHesIjGVAcxKjp5k2jmI=";
+  #     });
+  #   })
+  # ];
 
   nixpkgs.config.permittedInsecurePackages = [
     "dotnet-sdk-6.0.428"
@@ -749,11 +781,11 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    inputs.agenix.packages."${system}".default
+    inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     nixfmt-classic
     git
     vim
-    python312
+    python313
     cudatoolkit
     screen
     nvtopPackages.full
@@ -781,9 +813,9 @@
   services.auto-cpufreq.enable = true;
 
   services.ollama = {
-    package = pkgs.ollama.override { cudaArches = [ "sm_50" ]; };
+    package = pkgs.ollama-cuda.override { cudaArches = [ "sm_50" ]; };
     enable = true;
-    acceleration = "cuda";
+    # acceleration = "cuda";
   };
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -799,7 +831,7 @@
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
-    settings.PasswordAuthentication = true;
+    settings.PasswordAuthentication = false;
     settings.PermitRootLogin = "yes";
   };
   services.fail2ban = {
