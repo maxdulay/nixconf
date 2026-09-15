@@ -7,34 +7,6 @@
 }:
 let
   omen-rust = inputs.omen-rust.packages.${pkgs.stdenv.hostPlatform.system}.omen-rust;
-  # ancs-linux =
-  #   with pkgs;
-    # rustPlatform.buildRustPackage rec {
-    #   pname = "ancs-linux";
-    #   version = "19f5d0cce5d99b4ce2d77d90e3433215bea65172";
-    #
-    #   src = fetchFromGitHub {
-    #     owner = "kmod-midori";
-    #     repo = pname;
-    #     rev = version;
-    #     hash = "sha256-KTEf7YorJDEe3bHkwR5mJwduihyUDREFGX2H1B+gQZI=";
-    #   };
-    #   cargoHash = "sha256-zS8dllpKJUkRRFYeWFw3wc3OOPFPZlc7os48/MwwhGU=";
-    #
-    #   nativeBuildInputs = [
-    #     cargo
-    #     rustc
-    #     pkg-config
-    #   ];
-    #   buildInputs = [ dbus ];
-    #
-    #   meta = {
-    #     description = "Forward notifications from your iOS devices to your Linux desktop ";
-    #     homepage = "https://github.com/kmod-midori/ancs-linux";
-    #     license = lib.licenses.mit;
-    #     maintainers = [ ];
-    #   };
-    # };
 in
 {
   imports = [
@@ -351,7 +323,9 @@ in
 
         # Rules for bluetooth
 
-        # SUBSYSTEM=="bluetooth", ACTION=="add", DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0/bluetooth/hci0/hci0:256", ENV{SYSTEMD_USER_WANTS}+="ancs-linux.service"
+                # Rules for bluetooth
+
+                # SUBSYSTEM=="bluetooth", ACTION=="add", DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0/bluetooth/hci0/hci0:256", ENV{SYSTEMD_USER_WANTS}+="ancs-linux.service"
       '';
   };
 
