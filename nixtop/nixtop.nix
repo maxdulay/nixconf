@@ -44,7 +44,7 @@ in
   networking.hostName = "nixtop";
 
   programs.zsh.enable = true;
-	programs.nix-index-database.comma.enable = true;
+  programs.nix-index-database.comma.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
   # fileSystems."/home/maxdu/Windows" = {
@@ -260,7 +260,7 @@ in
   #       default_airplay_volume = -0.0;
   #     };
   #   };
-	programs.kdeconnect.enable = true;
+  programs.kdeconnect.enable = true;
   networking.firewall = {
     enable = true;
 
@@ -311,17 +311,17 @@ in
     enable = true;
     extraRules = # udev
       ''
-        # Rules for power saving 
-        SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="0", RUN+="${pkgs.su}/bin/su maxdu -c \"${pkgs.hyprland}/bin/hyprctl -i 0 --batch 'keyword animations:enabled 0; keyword decoration:blur:enabled 0; keyword general:gaps_in 0; keyword general:gaps_out 0; keyword general:border_size 1; keyword decoration:rounding 0; keyword monitor eDP-1,2560x1440@60,0x0,1.6666; keyword misc:vfr 1; keyword decoration:active_opacity 2.0; keyword decoration:inactive_opacity 2.0'\""
-        SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="0", RUN+="${pkgs.brightnessctl}/bin/brightnessctl set 5%%"
-        SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="1", RUN+="${pkgs.brightnessctl}/bin/brightnessctl set 50%%"
-        SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="1", RUN+="${pkgs.su}/bin/su maxdu -c \"${pkgs.hyprland}/bin/hyprctl -i 0 reload"
+                # Rules for power saving 
+                SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="0", RUN+="${pkgs.su}/bin/su maxdu -c \"${pkgs.hyprland}/bin/hyprctl -i 0 --batch 'keyword animations:enabled 0; keyword decoration:blur:enabled 0; keyword general:gaps_in 0; keyword general:gaps_out 0; keyword general:border_size 1; keyword decoration:rounding 0; keyword monitor eDP-1,2560x1440@60,0x0,1.6666; keyword misc:vfr 1; keyword decoration:active_opacity 2.0; keyword decoration:inactive_opacity 2.0'\""
+                SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="0", RUN+="${pkgs.brightnessctl}/bin/brightnessctl set 5%%"
+                SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="1", RUN+="${pkgs.brightnessctl}/bin/brightnessctl set 50%%"
+                SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="1", RUN+="${pkgs.su}/bin/su maxdu -c \"${pkgs.hyprland}/bin/hyprctl -i 0 reload"
 
-        # Rules for PS3 Eye
-        ATTR{idVendor}=="1415", ATTR{idProduct}=="2000", MODE="777"
-				#SUBSYSTEM=="usb", ATTRS{idVendor}=="0408", ATTRS{idProduct}=="5477", ATTR{authorized}="0"
+                # Rules for PS3 Eye
+                ATTR{idVendor}=="1415", ATTR{idProduct}=="2000", MODE="777"
 
-        # Rules for bluetooth
+        				# Disable laptop camera
+        				SUBSYSTEM=="usb", ATTRS{idVendor}=="0408", ATTRS{idProduct}=="5477", ATTR{authorized}="0"
 
                 # Rules for bluetooth
 
@@ -633,17 +633,17 @@ in
     settings = {
       battery = {
         governor = "powersave";
-				energy_performance_preference = "power";
-				energy_perf_bias = "power";
-				platform_profile = "cool";
+        energy_performance_preference = "power";
+        energy_perf_bias = "power";
+        platform_profile = "cool";
       };
 
       charger = {
         governor = "powersave";
         turbo = "auto";
-				energy_performance_preference = "performance";
-				energy_perf_bias = "performance";
-				platform_profile = "performance";
+        energy_performance_preference = "performance";
+        energy_perf_bias = "performance";
+        platform_profile = "performance";
       };
     };
   };
@@ -672,15 +672,15 @@ in
         ];
         text = # bash
           ''
-            until ping -c1 github.com; do sleep 1; done;
-            ONLINE_REV="$(git ls-remote https://github.com/NixOS/nixpkgs nixos-unstable | awk '{print $1}')"
-            CURRENT_REV=${config.system.nixos.revision}
+                        until ping -c1 github.com; do sleep 1; done;
+                        ONLINE_REV="$(git ls-remote https://github.com/NixOS/nixpkgs nixos-unstable | awk '{print $1}')"
+                        CURRENT_REV=${config.system.nixos.revision}
 
-            echo "$ONLINE_REV";
-            echo "$CURRENT_REV";
-            if [ "$ONLINE_REV" != "$CURRENT_REV" ]; then
-							notify-send "Update available for nixos-unstable" -t 10000;
-            fi
+                        echo "$ONLINE_REV";
+                        echo "$CURRENT_REV";
+                        if [ "$ONLINE_REV" != "$CURRENT_REV" ]; then
+            							notify-send "Update available for nixos-unstable" -t 10000;
+                        fi
           '';
       };
     in
@@ -711,8 +711,8 @@ in
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
-		vista-fonts
-		corefonts
+    vista-fonts
+    corefonts
   ];
   system.stateVersion = "23.11"; # Did you read the comment?
 }
