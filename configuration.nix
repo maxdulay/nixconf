@@ -14,9 +14,6 @@
   ];
 
   nix.extraOptions = "keep-outputs = true\nkeep-derivations = true\n";
-
-  services.journald.extraConfig = "SystemMaxUse=100M";
-
   # Set your time zone.
   time.timeZone = "America/New_York";
   time.hardwareClockInLocalTime = true;
