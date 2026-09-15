@@ -290,10 +290,10 @@ in
         from = 7000;
         to = 7005;
       }
-			{
+      {
         from = 1714;
         to = 1764;
-			}
+      }
     ];
   };
 
@@ -340,9 +340,13 @@ in
   };
   environment.variables.VDPAU_DRIVER = "va_gl";
   environment.variables.LIBVA_DRIVER_NAME = "iHD";
-  environment.sessionVariables.VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+  # environment.sessionVariables.VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+  environment.sessionVariables.VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json";
 
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = [
+    "modesetting"
+    "nvidia"
+  ];
 
   hardware.nvidia = {
     forceFullCompositionPipeline = true;
