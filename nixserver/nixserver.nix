@@ -5,6 +5,9 @@
   inputs,
   ...
 }:
+let
+  pkgs-unstable = inputs.nixpkgs.legacyPackages.${pkgs.system};
+in
 {
   imports = [
     # Include the results of the hardware scan.
@@ -234,11 +237,11 @@
             "fd42:dead:beef::10/64"
           ];
         }
-	{
-	  publicKey = "nepv5qJPwoPl6FyQrRYk+FLfn8JdeAM+S6RlAjkHVnA=";
+        {
+          publicKey = "nepv5qJPwoPl6FyQrRYk+FLfn8JdeAM+S6RlAjkHVnA=";
           presharedKeyFile = config.age.secrets."wg-client8-preshared".path;
-	  allowedIPs = [ "10.0.0.11/32" ];
-	}
+          allowedIPs = [ "10.0.0.11/32" ];
+        }
       ];
     };
   };
@@ -611,6 +614,8 @@
     openFirewall = true;
     mediaLocation = "/media/hdd/immich";
     accelerationDevices = null;
+    package = pkgs-unstable.immich;
+
   };
   users.users.immich.extraGroups = [
     "video"
@@ -627,6 +632,10 @@
       isReadOnly = false;
     };
     config =
+      let
+        # pkgs-unstable = pkgs-unstable;
+				inherit pkgs-unstable;
+      in
       {
         config,
         pkgs,
@@ -642,8 +651,9 @@
           openFirewall = true;
           mediaLocation = "/media/friendimmich";
           accelerationDevices = null;
+          package = pkgs-unstable.immich;
         };
-        environment.systemPackages = with pkgs; [ immich ];
+        environment.systemPackages = with pkgs; [ pkgs-unstable.immich ];
 
         users.users.immich.extraGroups = [
           "video"
@@ -795,7 +805,8 @@
     dnsutils
     qrencode
     wireguard-tools
-    jdk21
+    # jdk21
+    jdk25
     ferium
     gh
     tesseract
