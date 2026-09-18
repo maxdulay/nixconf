@@ -15,8 +15,8 @@
     omen-rust.inputs.nixpkgs.follows = "nixpkgs";
     iamb.url = "github:ulyssa/iamb";
     iamb.inputs.nixpkgs.follows = "nixpkgs";
-		nix-index-database.url = "github:nix-community/nix-index-database";
-		nix-index-database.inputs.nixpkgs.follows= "nixpkgs";
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
   };
 
@@ -36,7 +36,7 @@
           ./configuration.nix
           ./nixtop/nixtop.nix
           inputs.agenix.nixosModules.default
-					inputs.nix-index-database.nixosModules.default
+          inputs.nix-index-database.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs; };
@@ -48,7 +48,9 @@
       };
       nixosConfigurations.nixserver = nixpkgs-stable.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
+        specialArgs = {
+          inherit inputs;
+        };
         modules = [
           ./configuration.nix
           ./nixserver/nixserver.nix
