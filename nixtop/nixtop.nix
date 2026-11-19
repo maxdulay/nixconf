@@ -130,7 +130,8 @@ in
   };
 
   networking.networkmanager.enable = true;
-  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.services.NetworkManager-wait-online.enable = true;
+  networking.enableIPv6 = true;
   networking.networkmanager.ensureProfiles = {
     secrets.entries = [
       {
@@ -197,11 +198,12 @@ in
       };
       wg-dns = {
         connection = {
-          autoconnect = "false";
+          autoconnect = "true";
           id = "wg-dns";
           interface-name = "wg0";
           type = "wireguard";
           uuid = "c06f1c11-2ef9-427a-9860-1f16c59ecf42";
+          autoconnect-priority = -10;
         };
         ipv4 = {
           address1 = "10.0.0.9/32";
@@ -211,7 +213,7 @@ in
         };
         ipv6 = {
           addr-gen-mode = "default";
-          address1 = "fd42:dead:beef::10/128";
+          address1 = "fd42:dead:beef::9/128";
           method = "manual";
         };
         proxy = { };
@@ -219,6 +221,7 @@ in
         };
         "wireguard-peer.tXECZ4MMaCopORYz9yMMJNDqbzB7zNqo2ChbZ72jhVU=" = {
           allowed-ips = "10.0.1.100/32;fd42:dead:beef::1/64;";
+          # allowed-ips = "10.0.1.100/32;";
           endpoint = "wg.dulaym.ax:47111";
           persistent-keepalive = "25";
           preshared-key-flags = "1";
