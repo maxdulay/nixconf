@@ -365,15 +365,20 @@ in
     # Modesetting is required.
     modesetting.enable = true;
     # fix after suspend
-    powerManagement.enable = false;
+    powerManagement.enable = true;
     # offload
     powerManagement.finegrained = true;
     open = true;
     # accessible via `nvidia-settings`.
     nvidiaSettings = true;
+    branch = "stable";
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.latest; # or beta
+    # package = config.boot.kernelPackages.nvidiaPackages.stable; # or beta
   };
+  boot.extraModprobeConfig = ''
+    options nvidia NVreg_DynamicPowerManagement=0x01
+    options nvidia NVreg_EnableGpuFirmware=0
+  '';
   boot.blacklistedKernelModules = [ "nova_core" ];
 
   hardware.nvidia.prime = {
@@ -382,8 +387,8 @@ in
       enable = true;
       enableOffloadCmd = true;
     };
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
+    intelBusId = "PCI:0@0:2:0";
+    nvidiaBusId = "PCI:1@0:0:0";
   };
 
   environment.systemPackages =
