@@ -7,7 +7,7 @@
 {
   home.packages = [ ];
   home.pointerCursor = {
-		enable = true;
+    enable = true;
     gtk.enable = true;
     x11.enable = true;
     package = pkgs.bibata-cursors;
@@ -68,7 +68,7 @@
     cursorTheme.size = 24;
     font.name = "CaskaydiaCove Nerd Font Mono";
     gtk4 = {
-			theme = null;
+      theme = null;
       extraConfig = {
         gtk-application-prefer-dark-theme = 1;
       };
@@ -291,7 +291,7 @@
         	    '';
   };
   programs.firefox = {
-		configPath = ".mozilla/firefox";
+    configPath = ".mozilla/firefox";
     enable = true;
     languagePacks = [ "en-US" ];
     profiles.default.settings = {
