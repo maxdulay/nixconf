@@ -242,6 +242,7 @@
       cursor_trail = 1;
       enable_audio_bell = "no";
       visual_bell_duration = 0.1;
+      remember_window_size = "no";
     };
     extraConfig = ''
       action_alias kitty_scrollback_nvim kitten /home/maxdu/.local/share/nvim/lazy/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py
