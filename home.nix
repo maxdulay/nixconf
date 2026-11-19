@@ -25,7 +25,7 @@
     "TETR.IO" = {
       name = "TETR.IO";
       genericName = "tetris";
-      exec = "XDG_SESSION_TYPE=x11 gamemoderun tetrio";
+      exec = "gamemoderun tetrio --ozone-platform=x11";
       icon = "TETR.IO";
     };
     "com.github.wwmm.easyeffects" = {
