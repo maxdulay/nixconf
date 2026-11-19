@@ -385,6 +385,18 @@ in
               default_type application/pdf;
             '';
           };
+          locations."/cambio/colyseus/" = {
+            proxyPass = "http://localhost:2567/";
+            extraConfig = ''
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection $connection_upgrade;
+              proxy_set_header Host $host;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_read_timeout 3600s; 
+            '';
+          };
           listen = [
             {
               port = 8448;
@@ -634,7 +646,7 @@ in
     config =
       let
         # pkgs-unstable = pkgs-unstable;
-				inherit pkgs-unstable;
+        inherit pkgs-unstable;
       in
       {
         config,
