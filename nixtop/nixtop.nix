@@ -14,6 +14,15 @@ in
     ./hardware-configuration.nix
   ];
 
+  nix.settings = {
+    substituters = [
+      "https://cache.nixos-cuda.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+    ];
+  };
+
   age.secrets = {
     "wg-full-private".file = ../secrets/wg-full-private.age;
     "wg-full-preshared".file = ../secrets/wg-full-preshared.age;
