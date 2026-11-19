@@ -14,6 +14,15 @@ in
     ./hardware-configuration.nix
   ];
 
+  nix.settings = {
+    substituters = [
+      "https://cache.nixos-cuda.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+    ];
+  };
+
   age.secrets = {
     "wg-full-private".file = ../secrets/wg-full-private.age;
     "wg-full-preshared".file = ../secrets/wg-full-preshared.age;
@@ -76,7 +85,7 @@ in
       };
       extraPortals = [
         pkgs.xdg-desktop-portal
-        pkgs.xdg-desktop-portal-hyprland
+        # pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-termfilechooser
       ];
     };
@@ -121,7 +130,8 @@ in
   };
 
   networking.networkmanager.enable = true;
-  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.services.NetworkManager-wait-online.enable = true;
+  networking.enableIPv6 = true;
   networking.networkmanager.ensureProfiles = {
     secrets.entries = [
       {
@@ -188,11 +198,12 @@ in
       };
       wg-dns = {
         connection = {
-          autoconnect = "false";
+          autoconnect = "true";
           id = "wg-dns";
           interface-name = "wg0";
           type = "wireguard";
           uuid = "c06f1c11-2ef9-427a-9860-1f16c59ecf42";
+          autoconnect-priority = -10;
         };
         ipv4 = {
           address1 = "10.0.0.9/32";
@@ -202,7 +213,7 @@ in
         };
         ipv6 = {
           addr-gen-mode = "default";
-          address1 = "fd42:dead:beef::10/128";
+          address1 = "fd42:dead:beef::9/128";
           method = "manual";
         };
         proxy = { };
@@ -210,6 +221,7 @@ in
         };
         "wireguard-peer.tXECZ4MMaCopORYz9yMMJNDqbzB7zNqo2ChbZ72jhVU=" = {
           allowed-ips = "10.0.1.100/32;fd42:dead:beef::1/64;";
+          # allowed-ips = "10.0.1.100/32;";
           endpoint = "wg.dulaym.ax:47111";
           persistent-keepalive = "25";
           preshared-key-flags = "1";
@@ -353,15 +365,20 @@ in
     # Modesetting is required.
     modesetting.enable = true;
     # fix after suspend
-    powerManagement.enable = false;
+    powerManagement.enable = true;
     # offload
     powerManagement.finegrained = true;
     open = true;
     # accessible via `nvidia-settings`.
     nvidiaSettings = true;
+    branch = "stable";
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.latest; # or beta
+    # package = config.boot.kernelPackages.nvidiaPackages.stable; # or beta
   };
+  boot.extraModprobeConfig = ''
+    options nvidia NVreg_DynamicPowerManagement=0x01
+    options nvidia NVreg_EnableGpuFirmware=0
+  '';
   boot.blacklistedKernelModules = [ "nova_core" ];
 
   hardware.nvidia.prime = {
@@ -370,8 +387,8 @@ in
       enable = true;
       enableOffloadCmd = true;
     };
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
+    intelBusId = "PCI:0@0:2:0";
+    nvidiaBusId = "PCI:1@0:0:0";
   };
 
   environment.systemPackages =
@@ -481,7 +498,6 @@ in
       powertop
       gtk3
       gtk4
-      gtk2
       zsh
       zsh-powerlevel10k
       ffmpeg_7-full
@@ -541,7 +557,6 @@ in
       davinci-resolve
       libqalculate
       ani-cli
-      manga-tui
       mpv
       easyeffects
       bluez
@@ -562,6 +577,7 @@ in
           winetricks
         ];
     };
+    protontricks.enable = true;
     # remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
@@ -724,6 +740,7 @@ in
     proggyfonts
     vista-fonts
     corefonts
+    google-fonts
   ];
   system.stateVersion = "23.11"; # Did you read the comment?
 }
