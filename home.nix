@@ -93,7 +93,7 @@
       rust-analyzer
       clang-tools
       lua-language-server
-      ltex-ls
+      # ltex-ls
       vale-ls
       pyright
       jdt-language-server
