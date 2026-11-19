@@ -85,7 +85,7 @@ in
       };
       extraPortals = [
         pkgs.xdg-desktop-portal
-        pkgs.xdg-desktop-portal-hyprland
+        # pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-termfilechooser
       ];
     };
@@ -490,7 +490,6 @@ in
       powertop
       gtk3
       gtk4
-      gtk2
       zsh
       zsh-powerlevel10k
       ffmpeg_7-full
@@ -550,7 +549,6 @@ in
       davinci-resolve
       libqalculate
       ani-cli
-      manga-tui
       mpv
       easyeffects
       bluez
